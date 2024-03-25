@@ -1,0 +1,59 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\mahbu\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js install
+
+PATH: 
+  C:\Users\mahbu\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\mahbu\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files\Python39\Scripts;C:\Program Files\Python39;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;C:\Program Files\Git\cmd;C:\Program Files\nodejs;C:\Program Files\Git LFS;C:\Users\mahbu\AppData\Local\Microsoft\WindowsApps;C:\Users\mahbu\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\mahbu\.dotnet\tools;C:\Users\mahbu\AppData\Local\Microsoft\WindowsApps;C:\Program Files\heroku\bin;C:\Users\mahbu\OneDrive\Desktop\heroku\bin;C:\Users\mahbu\AppData\Roaming\npm;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl
+
+Yarn version: 
+  1.22.18
+
+Node version: 
+  16.13.2
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: connect ETIMEDOUT 104.16.16.35:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1161:16)
+
+npm manifest: 
+  {
+    "name": "server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+      "start": "node dist/server.js",
+      "start-dev": "nodemon src/server.ts",
+      "build": "tsc -p ."
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "cors": "^2.8.5",
+      "dotenv": "^16.0.0",
+      "express": "^4.17.1",
+      "gulp": "^4.0.2",
+      "gulp-tinypng-compress": "^1.2.5",
+      "mongodb": "^4.5.0",
+      "mongoose": "^6.3.3",
+      "redis": "^3.1.2",
+      "socket.io": "^4.0.1",
+      "sudo": "^1.0.3"
+    },
+    "devDependencies": {
+      "@types/express": "^4.17.11",
+      "@types/redis": "^2.8.28",
+      "@types/socket.io": "^2.1.13",
+      "nodemon": "^2.0.7",
+      "ts-node": "^9.1.1",
+      "typescript": "^4.2.4"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
