@@ -16,11 +16,12 @@ app.use(cors());
 
 // mongodb connectiorsn
 
-// const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
-// const client = new MongoClient(uri, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-// });
+const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
+const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
+console.log(client);
 
 
 
@@ -81,17 +82,17 @@ io.on("connection", async(socket: any) => {
 
 
 // import router
-const users = require('./routes/users');
-const chat = require('./routes/chat');
-const groups = require('./routes/groups');
+// const users = require('./routes/users');
+// const chat = require('./routes/chat');
+// const groups = require('./routes/groups');
 
 async function run() {
 
     try {
 
-        app.use('/users', users);
-        app.use('/chat', chat);
-        app.use('/group', groups);
+        // app.use('/users', users);
+        // app.use('/chat', chat);
+        // app.use('/group', groups);
 
     }
     catch (err) {

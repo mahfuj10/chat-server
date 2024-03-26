@@ -103,16 +103,16 @@ io.on("connection", function (socket) { return __awaiter(void 0, void 0, void 0,
     });
 }); });
 // import router
-var users = require('./routes/users');
-var chat = require('./routes/chat');
-var groups = require('./routes/groups');
+// const users = require('./routes/users');
+// const chat = require('./routes/chat');
+// const groups = require('./routes/groups');
 function run() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             try {
-                app.use('/users', users);
-                app.use('/chat', chat);
-                app.use('/group', groups);
+                // app.use('/users', users);
+                // app.use('/chat', chat);
+                // app.use('/group', groups);
             }
             catch (err) {
                 console.log(err);
