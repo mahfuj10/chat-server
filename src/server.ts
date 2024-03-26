@@ -23,6 +23,7 @@ app.use(cors());
 // });
 
 
+
 // socket.io connection
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
@@ -80,17 +81,17 @@ io.on("connection", async(socket: any) => {
 
 
 // import router
-// const users = require('../src/routes/users');
-// const chat = require('../src/routes/chat');
-// const groups = require('../src/routes/groups');
+const users = require('../src/routes/users');
+const chat = require('../src/routes/chat');
+const groups = require('../src/routes/groups');
 
 async function run() {
 
     try {
 
-        // app.use('/users', users);
-        // app.use('/chat', chat);
-        // app.use('/group', groups);
+        app.use('/users', users);
+        app.use('/chat', chat);
+        app.use('/group', groups);
 
     }
     catch (err) {
