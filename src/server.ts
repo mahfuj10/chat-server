@@ -81,9 +81,9 @@ io.on("connection", async(socket: any) => {
 
 
 // import router
-const users = require('../src/routes/users');
-const chat = require('../src/routes/chat');
-const groups = require('../src/routes/groups');
+const users = require('./routes/users');
+const chat = require('./routes/chat');
+const groups = require('./routes/groups');
 
 async function run() {
 
