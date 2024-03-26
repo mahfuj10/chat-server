@@ -16,11 +16,11 @@ app.use(cors());
 
 // mongodb connectiorsn
 
-const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
-const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+// const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
+// const client = new MongoClient(uri, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+// });
 // "@emotion/react": "^11.9.0",
 //     "@emotion/styled": "^11.8.1",
 //     "@material-ui/core": "^5.0.0-beta.5",
