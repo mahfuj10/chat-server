@@ -21,15 +21,6 @@ app.use(cors());
 //     useNewUrlParser: true,
 //     useUnifiedTopology: true,
 // });
-// "@emotion/react": "^11.9.0",
-//     "@emotion/styled": "^11.8.1",
-//     "@material-ui/core": "^5.0.0-beta.5",
-//     "@material-ui/icons": "^4.11.3",
-//     "@mui/icons-material": "^5.6.2",
-//     "@mui/lab": "^5.0.0-alpha.80",
-//     "@mui/material": "^5.6.3",
-//     "@mui/styled-engine-sc": "^5.6.1",
-// console.log('client',client);
 
 
 // socket.io connection
