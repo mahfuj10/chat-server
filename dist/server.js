@@ -46,69 +46,73 @@ var cors = require("cors");
 var MongoClient = require("mongodb").MongoClient;
 require("dotenv").config();
 var app = express_1.default();
-var port = process.env.PORT || 5000;
+var port = 9000;
 //middleware
 app.use(express_1.default.json());
 app.use(cors());
 // mongodb connectiorsn
-var uri = "mongodb+srv://" + process.env.DB_USER + ":" + process.env.DB_PASS + "@cluster0.39aol.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-var client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+// const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
+// const client = new MongoClient(uri, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+// });
 // socket.io connection
 var server = http_1.default.createServer(app);
 var io = new socket_io_1.Server(server, { cors: { origin: "*" } });
-io.on("connection", function (socket) {
-    console.log("User connected with ", socket.id);
-    socket.on("join_room", function (data) {
-        socket.join(data);
+io.on("connection", function (socket) { return __awaiter(void 0, void 0, void 0, function () {
+    var users_1;
+    return __generator(this, function (_a) {
+        try {
+            console.log("User connected with ", socket.id);
+            socket.on("join_room", function (data) {
+                socket.join(data);
+            });
+            socket.on("send_message", function (data) {
+                socket.to(data.roomId).emit("recive_message", data);
+            });
+            socket.on('typing', function (data) {
+                socket.broadcast.emit('typing', data);
+            });
+            socket.on('deleteMessage', function (data) {
+                socket.to(data.roomId).emit("deleteMessage", data);
+            });
+            users_1 = {};
+            socket.on('login', function (data) {
+                var _a;
+                users_1[socket.id] = (_a = data.loginUser) === null || _a === void 0 ? void 0 : _a.uid;
+                socket.broadcast.emit('user-connected', data.loginUser);
+            });
+            socket.on('addedUser', function (data) {
+                socket.emit('addedUser', data);
+                console.log(data);
+            });
+            socket.on('joinedgroup', function (data) {
+                socket.emit('joinedgroup', data);
+                console.log(data);
+            });
+            socket.on('disconnect', function () {
+                socket.broadcast.emit('user-disconnected', users_1[socket.id]);
+                delete users_1[socket.id];
+                console.log("User disconnected " + socket.id);
+            });
+        }
+        catch (err) {
+            console.log('socket connection error', err);
+        }
+        return [2 /*return*/];
     });
-    socket.on("send_message", function (data) {
-        socket.to(data.roomId).emit("recive_message", data);
-    });
-    socket.on('typing', function (data) {
-        socket.broadcast.emit('typing', data);
-    });
-    socket.on('deleteMessage', function (data) {
-        socket.to(data.roomId).emit("deleteMessage", data);
-    });
-    var users = {};
-    socket.on('login', function (data) {
-        var _a;
-        // const uid = { userId: data?.userId };
-        users[socket.id] = (_a = data.loginUser) === null || _a === void 0 ? void 0 : _a.uid;
-        socket.broadcast.emit('user-connected', data.loginUser);
-        // socket.broadcast.emit("activeusers", users);
-    });
-    socket.on('addedUser', function (data) {
-        socket.emit('addedUser', data);
-        console.log(data);
-    });
-    socket.on('disconnect', function () {
-        socket.broadcast.emit('user-disconnected', users[socket.id]);
-        delete users[socket.id];
-        console.log("User disconnected " + socket.id);
-    });
-    // socket.on('checkActive', id => {
-    //     socket.to(id).emit('isActive', id);
-    // })
-    // socket.on('activeUser', user => {
-    //     socket.broadcast.emit('receive_activeUser', user)
-    // })
-});
-// mongodb connection
+}); });
 // import router
-var users = require('../src/routes/users');
-var chat = require('../src/routes/chat');
-var groups = require('../src/routes/groups');
+// const users = require('../src/routes/users');
+// const chat = require('../src/routes/chat');
+// const groups = require('../src/routes/groups');
 function run() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             try {
-                app.use('/users', users);
-                app.use('/chat', chat);
-                app.use('/group', groups);
+                // app.use('/users', users);
+                // app.use('/chat', chat);
+                // app.use('/group', groups);
             }
             catch (err) {
                 console.log(err);
@@ -132,5 +136,5 @@ app.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, func
     });
 }); });
 server.listen(port, function () {
-    console.log("my server is runningin port 5000");
+    console.log("my server is runningin port", port);
 });
