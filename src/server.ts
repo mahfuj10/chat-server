@@ -28,10 +28,11 @@ console.log(client);
 // socket.io connection
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
+let onlineUsers: any = [];
 
 io.on("connection", async(socket: any) => {
-
    try{
+
     console.log("User connected with ", socket.id);
 
     socket.on("join_room", (data: any) => {
@@ -50,15 +51,6 @@ io.on("connection", async(socket: any) => {
         socket.to(data.roomId).emit("deleteMessage", data);
     })
 
-
-    const users: any = {};
-
-    socket.on('login', function (data: any) {
-        users[socket.id] = data.loginUser?.uid
-        socket.broadcast.emit('user-connected', data.loginUser);
-    });
-
-
     socket.on('addedUser', function (data: any) {
         socket.emit('addedUser', data);
         console.log(data)
@@ -69,11 +61,32 @@ io.on("connection", async(socket: any) => {
         console.log(data)
     })
 
-    socket.on('disconnect', () => {
-        socket.broadcast.emit('user-disconnected', users[socket.id])
-        delete users[socket.id]
-        console.log(`User disconnected ${socket.id}`);
-    });
+     // add new user
+  socket.on("new-user-add", (newUserId: string) => {
+    if (!onlineUsers.some((user: any) => user.userId === newUserId)) {  
+      // if user is not added before
+      onlineUsers.push({ userId: newUserId, socketId: socket.id });
+      console.log("new user is here!", onlineUsers);
+    }
+    // send all active users to new user
+    io.emit("get-users", onlineUsers);
+  });
+  
+  socket.on("disconnect", () => {
+    onlineUsers = onlineUsers.filter((user: any) => user.socketId !== socket.id)
+    console.log("user disconnected", onlineUsers);
+    // send all online users to all users
+    io.emit("get-users", onlineUsers);
+  });
+  
+  socket.on("offline", () => {
+    // remove user from active users
+    onlineUsers = onlineUsers.filter((user: any) => user.socketId !== socket.id)
+    console.log("user is offline", onlineUsers);
+    // send all online users to all users
+    io.emit("get-users", onlineUsers);
+  });
+     
    } catch(err){
     console.log('socket connection error',err);
    }
@@ -82,17 +95,17 @@ io.on("connection", async(socket: any) => {
 
 
 // import router
-// const users = require('./routes/users');
-// const chat = require('./routes/chat');
-// const groups = require('./routes/groups');
+const users = require('./routes/users');
+const chat = require('./routes/chat');
+const groups = require('./routes/groups');
 
 async function run() {
 
     try {
 
-        // app.use('/users', users);
-        // app.use('/chat', chat);
-        // app.use('/group', groups);
+        app.use('/users', users);
+        app.use('/chat', chat);
+        app.use('/group', groups);
 
     }
     catch (err) {
