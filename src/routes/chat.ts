@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { getDb } from "../db";
 const express = require('express')
 const router = express.Router();
 const { MongoClient } = require("mongodb");
@@ -7,13 +8,14 @@ const gulp = require('gulp');
 const tinypng = require('gulp-tinypng-compress');
 require("dotenv").config();
 
-const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+// const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-const database = client.db("Leaves");
-const usersChat = database.collection('chats');
-
-client.connect();
+// const database = client.db("Leaves");
+// const usersChat = database.collection('chats');
+const chatsCollection = getDb().collection('chats');
+// const chatsCollection = getDb().collection('users');
+// client.connect();
 
 
 // post user message
@@ -29,7 +31,7 @@ router.post('/', async (req: Request, res: Response) => {
                 }))
                 .pipe(gulp.dest('images'));
         });
-        res.send(await usersChat.insertOne(req.body));
+        res.send(await chatsCollection.insertOne(req.body));
     }
     catch (err) {
         console.log(err);
@@ -42,7 +44,7 @@ router.get('/:room', async (req: Request, res: Response) => {
         const roomId: any = req.params.room;
         if (isNaN(roomId) !== true) {
             const query = { roomId: parseInt(roomId) };
-            res.send(await usersChat.find(query).toArray());
+            res.send(await chatsCollection.find(query).toArray());
         };
     } catch (err) {
         res.status(500).json({ message: 'There was errror in server' })
@@ -52,7 +54,7 @@ router.get('/:room', async (req: Request, res: Response) => {
 // get all data
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.send(await usersChat.find({}).toArray());
+        res.send(await chatsCollection.find({}).toArray());
     } catch (err) {
         next(err)
     }
@@ -64,7 +66,7 @@ router.put('/deletemessage/:id', async (req: Request, res: Response) => {
     const messageId = req.params.id;
     const query = { _id: ObjectId(messageId) };
     const updatedDoc = { $set: { deleted: true } };
-    res.send(await usersChat.updateOne(query, updatedDoc));
+    res.send(await chatsCollection.updateOne(query, updatedDoc));
     // } catch (err) {
     //     res.status(500).json({ message: 'There was errror in server' })
     // }
@@ -76,7 +78,7 @@ router.delete('/deleteallmessages/:roomId', async (req: Request, res: Response) 
     try {
         const roomId = parseInt(req.params.roomId);
         const query = { roomId: roomId };
-        res.send(await usersChat.deleteMany(query));
+        res.send(await chatsCollection.deleteMany(query));
     } catch (err: any) {
         res.status(500).json({ message: err.message })
     }

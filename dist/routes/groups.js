@@ -44,7 +44,7 @@ var ObjectId = require('mongodb').ObjectId;
 var gulp = require('gulp');
 var tinypng = require('gulp-tinypng-compress');
 require("dotenv").config();
-var uri = "mongodb+srv://" + process.env.DB_USER + ":" + process.env.DB_PASS + "@leaves.eaf0bsd.mongodb.net/";
+var uri = "mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/";
 var client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 var database = client.db("Leaves");
 var allGroups = database.collection('groups');

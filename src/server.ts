@@ -2,6 +2,7 @@ import express from 'express'
 import http from 'http'
 import { Server } from 'socket.io'
 import { Request, Response } from "express";
+import { connectToDatabase } from './db';
 const cors = require("cors");
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
@@ -14,14 +15,26 @@ const port =  9000;
 app.use(express.json());
 app.use(cors());
 
-// mongodb connectiorsn
 
-const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
-const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
-console.log(client);
+// mongodb connectiorsn
+async function connectDatabase() {
+    try {
+        await connectToDatabase();
+        console.log('object');
+        // Your code to start the server or perform other initialization tasks
+    } catch (error) {
+        console.error('Error starting the application:', error);
+        process.exit(1); // Exit the application if unable to connect to the database
+    }
+}
+
+
+// const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
+// const client = new MongoClient(uri, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+// });
+// console.log(client);
 
 
 
@@ -95,17 +108,14 @@ io.on("connection", async(socket: any) => {
 
 
 // import router
-const users = require('./routes/users');
-const chat = require('./routes/chat');
-const groups = require('./routes/groups');
 
 async function run() {
-
     try {
+        await connectDatabase()
 
-        app.use('/users', users);
-        app.use('/chat', chat);
-        app.use('/group', groups);
+        app.use('/users', require('./routes/users'));
+        app.use('/chat', require('./routes/chat'));
+        app.use('/group', require('./routes/groups'));
 
     }
     catch (err) {

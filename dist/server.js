@@ -51,16 +51,17 @@ var port = 9000;
 app.use(express_1.default.json());
 app.use(cors());
 // mongodb connectiorsn
-// const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
-// const client = new MongoClient(uri, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-// });
+var uri = "mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/";
+var client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
+console.log(client);
 // socket.io connection
 var server = http_1.default.createServer(app);
 var io = new socket_io_1.Server(server, { cors: { origin: "*" } });
+var onlineUsers = [];
 io.on("connection", function (socket) { return __awaiter(void 0, void 0, void 0, function () {
-    var users_1;
     return __generator(this, function (_a) {
         try {
             console.log("User connected with ", socket.id);
@@ -76,12 +77,6 @@ io.on("connection", function (socket) { return __awaiter(void 0, void 0, void 0,
             socket.on('deleteMessage', function (data) {
                 socket.to(data.roomId).emit("deleteMessage", data);
             });
-            users_1 = {};
-            socket.on('login', function (data) {
-                var _a;
-                users_1[socket.id] = (_a = data.loginUser) === null || _a === void 0 ? void 0 : _a.uid;
-                socket.broadcast.emit('user-connected', data.loginUser);
-            });
             socket.on('addedUser', function (data) {
                 socket.emit('addedUser', data);
                 console.log(data);
@@ -90,10 +85,28 @@ io.on("connection", function (socket) { return __awaiter(void 0, void 0, void 0,
                 socket.emit('joinedgroup', data);
                 console.log(data);
             });
-            socket.on('disconnect', function () {
-                socket.broadcast.emit('user-disconnected', users_1[socket.id]);
-                delete users_1[socket.id];
-                console.log("User disconnected " + socket.id);
+            // add new user
+            socket.on("new-user-add", function (newUserId) {
+                if (!onlineUsers.some(function (user) { return user.userId === newUserId; })) {
+                    // if user is not added before
+                    onlineUsers.push({ userId: newUserId, socketId: socket.id });
+                    console.log("new user is here!", onlineUsers);
+                }
+                // send all active users to new user
+                io.emit("get-users", onlineUsers);
+            });
+            socket.on("disconnect", function () {
+                onlineUsers = onlineUsers.filter(function (user) { return user.socketId !== socket.id; });
+                console.log("user disconnected", onlineUsers);
+                // send all online users to all users
+                io.emit("get-users", onlineUsers);
+            });
+            socket.on("offline", function () {
+                // remove user from active users
+                onlineUsers = onlineUsers.filter(function (user) { return user.socketId !== socket.id; });
+                console.log("user is offline", onlineUsers);
+                // send all online users to all users
+                io.emit("get-users", onlineUsers);
             });
         }
         catch (err) {
@@ -103,16 +116,16 @@ io.on("connection", function (socket) { return __awaiter(void 0, void 0, void 0,
     });
 }); });
 // import router
-// const users = require('./routes/users');
-// const chat = require('./routes/chat');
-// const groups = require('./routes/groups');
+var users = require('./routes/users');
+var chat = require('./routes/chat');
+var groups = require('./routes/groups');
 function run() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             try {
-                // app.use('/users', users);
-                // app.use('/chat', chat);
-                // app.use('/group', groups);
+                app.use('/users', users);
+                app.use('/chat', chat);
+                app.use('/group', groups);
             }
             catch (err) {
                 console.log(err);

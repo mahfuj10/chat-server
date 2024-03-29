@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { getDb } from "../db";
 const express = require('express')
 const router = express.Router();
 const { MongoClient } = require("mongodb");
@@ -9,19 +10,22 @@ const tinypng = require('gulp-tinypng-compress');
 require("dotenv").config();
 
 
-const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+// const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const usersCollection = getDb().collection('users');
+const groupsCollection = getDb().collection('groups');
+const chatsCollection = getDb().collection('chats');
 
-const database = client.db("Leaves");
-const allGroups = database.collection('groups');
-const usersCollection = database.collection('users');
-const usersChat = database.collection('chats');
+// const database = client.db("Leaves");
+// const allGroups = database.collection('groups');
+// const usersCollection = database.collection('users');
+// const usersChat = database.collection('chats');
 
-client.connect();
+// client.connect();
 
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.send(await allGroups.find({}).toArray());
+        res.send(await groupsCollection.find({}).toArray());
     } catch (err) {
         next(err);
     }
@@ -30,7 +34,7 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 // post groups
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.send(await allGroups.insertOne(req.body));
+        res.send(await groupsCollection.insertOne(req.body));
     } catch (err) {
         next(err);
     }
@@ -54,7 +58,7 @@ router.get('/groupchat/:groupId', async (req: Request, res: Response) => {
     try {
         const groupId: number = parseInt(req.params.groupId);
         const query = { groupId: groupId };
-        res.send(await usersChat.find(query).toArray());
+        res.send(await chatsCollection.find(query).toArray());
     } catch (err) {
         console.error(err);
     }
