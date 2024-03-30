@@ -1,11 +1,12 @@
 import { MongoClient, Db } from 'mongodb';
+require("dotenv").config();
 
 let _db: Db;
 
 export async function connectToDatabase() {
     if (_db) return _db;
     try {
-        const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`;
+        const uri = process.env.DB_URL as string;
         const client = new MongoClient(uri);
         await client.connect();
         console.log('Connected to the database');

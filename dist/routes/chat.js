@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var db_1 = require("../db");
 var express = require('express');
 var router = express.Router();
 var MongoClient = require("mongodb").MongoClient;
@@ -43,11 +44,13 @@ var ObjectId = require('mongodb').ObjectId;
 var gulp = require('gulp');
 var tinypng = require('gulp-tinypng-compress');
 require("dotenv").config();
-var uri = "mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/";
-var client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-var database = client.db("Leaves");
-var usersChat = database.collection('chats');
-client.connect();
+// const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+// const database = client.db("Leaves");
+// const usersChat = database.collection('chats');
+var chatsCollection = db_1.getDb().collection('chats');
+// const chatsCollection = getDb().collection('users');
+// client.connect();
 // post user message
 router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, _b, err_1;
@@ -65,7 +68,7 @@ router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, 
                         .pipe(gulp.dest('images'));
                 });
                 _b = (_a = res).send;
-                return [4 /*yield*/, usersChat.insertOne(req.body)];
+                return [4 /*yield*/, chatsCollection.insertOne(req.body)];
             case 1:
                 _b.apply(_a, [_c.sent()]);
                 return [3 /*break*/, 3];
@@ -88,7 +91,7 @@ router.get('/:room', function (req, res) { return __awaiter(void 0, void 0, void
                 if (!(isNaN(roomId) !== true)) return [3 /*break*/, 2];
                 query = { roomId: parseInt(roomId) };
                 _b = (_a = res).send;
-                return [4 /*yield*/, usersChat.find(query).toArray()];
+                return [4 /*yield*/, chatsCollection.find(query).toArray()];
             case 1:
                 _b.apply(_a, [_c.sent()]);
                 _c.label = 2;
@@ -111,7 +114,7 @@ router.get('/', function (req, res, next) { return __awaiter(void 0, void 0, voi
             case 0:
                 _c.trys.push([0, 2, , 3]);
                 _b = (_a = res).send;
-                return [4 /*yield*/, usersChat.find({}).toArray()];
+                return [4 /*yield*/, chatsCollection.find({}).toArray()];
             case 1:
                 _b.apply(_a, [_c.sent()]);
                 return [3 /*break*/, 3];
@@ -133,7 +136,7 @@ router.put('/deletemessage/:id', function (req, res) { return __awaiter(void 0, 
                 query = { _id: ObjectId(messageId) };
                 updatedDoc = { $set: { deleted: true } };
                 _b = (_a = res).send;
-                return [4 /*yield*/, usersChat.updateOne(query, updatedDoc)];
+                return [4 /*yield*/, chatsCollection.updateOne(query, updatedDoc)];
             case 1:
                 _b.apply(_a, [_c.sent()]);
                 return [2 /*return*/];
@@ -150,7 +153,7 @@ router.delete('/deleteallmessages/:roomId', function (req, res) { return __await
                 roomId = parseInt(req.params.roomId);
                 query = { roomId: roomId };
                 _b = (_a = res).send;
-                return [4 /*yield*/, usersChat.deleteMany(query)];
+                return [4 /*yield*/, chatsCollection.deleteMany(query)];
             case 1:
                 _b.apply(_a, [_c.sent()]);
                 return [3 /*break*/, 3];

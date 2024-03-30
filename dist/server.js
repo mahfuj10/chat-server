@@ -42,6 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var http_1 = __importDefault(require("http"));
 var socket_io_1 = require("socket.io");
+var db_1 = require("./db");
 var cors = require("cors");
 var MongoClient = require("mongodb").MongoClient;
 require("dotenv").config();
@@ -51,12 +52,34 @@ var port = 9000;
 app.use(express_1.default.json());
 app.use(cors());
 // mongodb connectiorsn
-var uri = "mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/";
-var client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
-console.log(client);
+function connectDatabase() {
+    return __awaiter(this, void 0, void 0, function () {
+        var error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, db_1.connectToDatabase()];
+                case 1:
+                    _a.sent();
+                    console.log('object');
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_1 = _a.sent();
+                    console.error('Error starting the application:', error_1);
+                    process.exit(1); // Exit the application if unable to connect to the database
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+}
+// const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
+// const client = new MongoClient(uri, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+// });
+// console.log(client);
 // socket.io connection
 var server = http_1.default.createServer(app);
 var io = new socket_io_1.Server(server, { cors: { origin: "*" } });
@@ -116,23 +139,27 @@ io.on("connection", function (socket) { return __awaiter(void 0, void 0, void 0,
     });
 }); });
 // import router
-var users = require('./routes/users');
-var chat = require('./routes/chat');
-var groups = require('./routes/groups');
 function run() {
     return __awaiter(this, void 0, void 0, function () {
+        var err_1;
         return __generator(this, function (_a) {
-            try {
-                app.use('/users', users);
-                app.use('/chat', chat);
-                app.use('/group', groups);
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, 3, 4]);
+                    return [4 /*yield*/, connectDatabase()];
+                case 1:
+                    _a.sent();
+                    app.use('/users', require('./routes/users'));
+                    app.use('/chat', require('./routes/chat'));
+                    app.use('/group', require('./routes/groups'));
+                    return [3 /*break*/, 4];
+                case 2:
+                    err_1 = _a.sent();
+                    console.log(err_1);
+                    return [3 /*break*/, 4];
+                case 3: return [7 /*endfinally*/];
+                case 4: return [2 /*return*/];
             }
-            catch (err) {
-                console.log(err);
-            }
-            finally {
-            }
-            return [2 /*return*/];
         });
     });
 }

@@ -3,13 +3,12 @@ import http from 'http'
 import { Server } from 'socket.io'
 import { Request, Response } from "express";
 import { connectToDatabase } from './db';
-const cors = require("cors");
-const { MongoClient } = require("mongodb");
+import cors from "cors";
 require("dotenv").config();
+
+
 const app = express();
-const port =  9000;
-
-
+const port =  process.env.PORT || 9000;
 
 //middleware
 app.use(express.json());
@@ -20,23 +19,13 @@ app.use(cors());
 async function connectDatabase() {
     try {
         await connectToDatabase();
-        console.log('object');
+        console.log('DB connected');
         // Your code to start the server or perform other initialization tasks
     } catch (error) {
         console.error('Error starting the application:', error);
         process.exit(1); // Exit the application if unable to connect to the database
     }
 }
-
-
-// const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
-// const client = new MongoClient(uri, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-// });
-// console.log(client);
-
-
 
 // socket.io connection
 const server = http.createServer(app);

@@ -2,26 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { getDb } from "../db";
 const express = require('express')
 const router = express.Router();
-const { MongoClient } = require("mongodb");
-const mongodb = require("mongodb");
-const ObjectId = require('mongodb').ObjectId;
-const gulp = require('gulp');
-const tinypng = require('gulp-tinypng-compress');
-require("dotenv").config();
 
 
-// const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
-// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 const usersCollection = getDb().collection('users');
 const groupsCollection = getDb().collection('groups');
 const chatsCollection = getDb().collection('chats');
-
-// const database = client.db("Leaves");
-// const allGroups = database.collection('groups');
-// const usersCollection = database.collection('users');
-// const usersChat = database.collection('chats');
-
-// client.connect();
 
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {

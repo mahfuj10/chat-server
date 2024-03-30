@@ -36,17 +36,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var db_1 = require("../db");
 var express = require('express');
 var router = express.Router();
 var MongoClient = require("mongodb").MongoClient;
 var mongodb = require("mongodb");
 var ObjectId = require('mongodb').ObjectId;
 require("dotenv").config();
-var uri = "mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/";
-var client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-var database = client.db("Leaves");
-var usersCollection = database.collection('users');
-client.connect();
+// const uri = `mongodb+srv://mahfujurr042:IaoR5wxD07QYuycY@leaves.eaf0bsd.mongodb.net/`
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+// const database = client.db("Leaves");
+// const usersCollection = database.collection('users');
+// client.connect();
+var usersCollection = db_1.getDb().collection('users');
 // save google sign method user login
 router.put('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var user, filter, options, updateDoc, result, err_1;
