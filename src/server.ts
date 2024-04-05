@@ -30,13 +30,10 @@ async function connectDatabase() {
 // socket.io connection
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
-let onlineUsers: any = [];
+let onlineUsers:any = {};
 
 io.on("connection", async(socket: any) => {
    try{
-
-    console.log("User connected with ", socket.id);
-
     socket.on("join_room", (data: any) => {
         socket.join(data);
     })
@@ -59,35 +56,29 @@ io.on("connection", async(socket: any) => {
     })
 
     socket.on('joinedgroup', function (data: any) {
-        socket.emit('joinedgroup', data);
+        socket.broadcast.emit('joinedgroup', data);
         console.log(data)
     })
 
-     // add new user
-  socket.on("new-user-add", (newUserId: string) => {
-    if (!onlineUsers.some((user: any) => user.userId === newUserId)) {  
-      // if user is not added before
-      onlineUsers.push({ userId: newUserId, socketId: socket.id });
-      console.log("new user is here!", onlineUsers);
-    }
-    // send all active users to new user
-    io.emit("get-users", onlineUsers);
-  });
+    socket.on("user_connected", (user_id: string) => {
+        onlineUsers[user_id] = socket.id
+        socket.emit('updateUserStatus', onlineUsers)
+        console.log(onlineUsers);
+        console.log(`User connected user_id ${user_id}`);
+    });
   
-  socket.on("disconnect", () => {
-    onlineUsers = onlineUsers.filter((user: any) => user.socketId !== socket.id)
-    console.log("user disconnected", onlineUsers);
-    // send all online users to all users
-    io.emit("get-users", onlineUsers);
-  });
-  
-  socket.on("offline", () => {
-    // remove user from active users
-    onlineUsers = onlineUsers.filter((user: any) => user.socketId !== socket.id)
-    console.log("user is offline", onlineUsers);
-    // send all online users to all users
-    io.emit("get-users", onlineUsers);
-  });
+    socket.on("disconnect", () => {
+        Object.keys(onlineUsers).forEach(userId => {
+            if (onlineUsers[userId] === socket.id) {
+              delete onlineUsers[userId];
+            }
+        });
+
+        socket.emit('users_inactive', onlineUsers)
+        
+        console.log(`User disconnected socketId ${socket.id}`);
+    });
+   
      
    } catch(err){
     console.log('socket connection error',err);

@@ -11,15 +11,15 @@ const chatsCollection = getDb().collection('chats');
 // post user message
 router.post('/', async (req: Request, res: Response) => {
     try {
-        gulp.task('tinypng', function () {
-            gulp.src(req.body.picture)
-                .pipe(tinypng({
-                    key: 'fB84pKZmS03LBzgS0yCPK3862c5hslh7',
-                    sigFile: 'images/.tinypng-sigs',
-                    log: true
-                }))
-                .pipe(gulp.dest('images'));
-        });
+        // gulp.task('tinypng', function () {
+        //     gulp.src(req.body.picture)
+        //         .pipe(tinypng({
+        //             key: 'fB84pKZmS03LBzgS0yCPK3862c5hslh7',
+        //             sigFile: 'images/.tinypng-sigs',
+        //             log: true
+        //         }))
+        //         .pipe(gulp.dest('images'));
+        // });
         res.send(await chatsCollection.insertOne(req.body));
     }
     catch (err) {
@@ -68,6 +68,19 @@ router.delete('/deleteallmessages/:roomId', async (req: Request, res: Response) 
         const roomId = parseInt(req.params.roomId);
         const query = { roomId: roomId };
         res.send(await chatsCollection.deleteMany(query));
+    } catch (err: any) {
+        res.status(500).json({ message: err.message })
+    }
+});
+
+// update read to true
+router.put('/read_messages', async (req: Request, res: Response) => {
+    try {
+        const roomId = parseInt(req.query.roomId as string);
+        const query = { roomId: roomId };
+        const result = await chatsCollection.updateMany(query, { $set: { read: true } });
+
+        res.send(result);
     } catch (err: any) {
         res.status(500).json({ message: err.message })
     }
